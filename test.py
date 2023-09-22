@@ -97,12 +97,12 @@ def stopTest():
     #check for hs
     global Cong
     if int(amountWords)>212:
-        Cong=Label(root, text=f'Conratulations! You have set a new world record of {amountWords} per minute.', fg='green')
+        Cong=Label(root, text=f'Conratulations! You have set a new world record of {amountWords} words per minute.', fg='green')
         Cong.place(relx=0.5, rely=0.2, anchor=N)
         HSget.write('\n'+str(amountWords))
         HSget.close()
     elif int(amountWords)>int(High):
-        Cong=Label(root, text=f'Conratulations! You have set a new highscore of {amountWords} per minute.', fg='green')
+        Cong=Label(root, text=f'Conratulations! You have set a new highscore of {amountWords} words per minute.', fg='green')
         Cong.place(relx=0.5, rely=0.2, anchor=N)
         HSget.write('\n'+str(amountWords))
         HSget.close()
