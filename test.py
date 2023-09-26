@@ -28,8 +28,15 @@ def keyPress(event=None):
             labelLeft.configure(text=labelLeft.cget('text') + event.char.lower())
             #set the next Letter Lavbel
             currentLetterLabel.configure(text=labelRight.cget('text')[0])
+        else:
+            currentLetterLabel.configure(text=currentLetterLabel.cget('text'), fg='red')
+            root.after(250, oneLine)
+
     except:
         pass
+def oneLine():
+        currentLetterLabel.configure(text=currentLetterLabel.cget('text'), fg='grey')
+
 
 
 def resetWritingLabels():
