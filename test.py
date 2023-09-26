@@ -211,7 +211,34 @@ def sBack():
     TimeButton.destroy()
     homeScreen()
 
+def mBack():
+    backButton.destroy()
+    noPlayers.destroy()
+    players.destroy()
+    playButton.destroy()
+    homeScreen()
+
 def mStart():
+    multiP.destroy()
+    singleP.destroy()
+    global multiGet
+    multiGet=open('Multiplayer.txt','w+')
+    global noPlayers
+    noPlayers=Label(root, text='Please enter the number of players', fg='black')
+    noPlayers.place(relx=0.5, rely=0.4, anchor=N)
+    #taking the amount of players that want to compete 
+    global players
+    players= Entry(root, width= 40)
+    players.place(relx=0.5,rely=0.5, anchor=N)
+    global playButton
+    playButton= Button(root, text=f'Play',width=6, command=validatestart)
+    playButton.place(relx=0.5,rely=0.7,anchor=S)
+    changeOnHover(playButton,'green','#efefef')
+    global backButton
+    backButton= Button(root,text='Back',width=6, command=mBack)
+    backButton.place(relx=0.5,rely=0.82,anchor=S)
+    changeOnHover(backButton,'red','#efefef')
+
     pass
 def homeScreen():
     global multiP
