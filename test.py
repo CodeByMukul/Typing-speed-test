@@ -157,6 +157,8 @@ def addSecond():
     if writeAble:
         root.after(1000, addSecond)
 def start():
+    multiP.destroy()
+    singleP.destroy()
     global HSget
     HSget=open('Highscore.txt','r+')
     global High
@@ -173,9 +175,13 @@ def start():
     Time= Entry(root, width= 40)
     Time.place(relx=0.5,rely=0.5, anchor=N)
     global TimeButton
-    TimeButton= Button(root, text=f'Start', command=validatestart)
+    TimeButton= Button(root, text=f'Start',width=6, command=validatestart)
     TimeButton.place(relx=0.5,rely=0.7,anchor=S)
-    changeOnHover(TimeButton,'grey','#efefef')
+    changeOnHover(TimeButton,'green','#efefef')
+    global backButton
+    backButton= Button(root,text='Back',width=6, command=sBack)
+    backButton.place(relx=0.5,rely=0.82,anchor=S)
+    changeOnHover(backButton,'red','#efefef')
 
 # this will check if user wrote the correct text for the time input
 def validatestart():
@@ -186,6 +192,7 @@ def validatestart():
         Timeget.destroy()
         Time.destroy()
         TimeButton.destroy()
+        backButton.destroy()
         resetWritingLabels()
         
     else:
@@ -193,11 +200,30 @@ def validatestart():
         Timeget.destroy()
         Time.destroy()
         TimeButton.destroy()
+        backButton.destroy()
         start()
 
-            
+def sBack():
+    backButton.destroy()
+    HS.destroy()
+    Timeget.destroy()
+    Time.destroy()
+    TimeButton.destroy()
+    homeScreen()
+
+def mStart():
+    pass
+def homeScreen():
+    global multiP
+    multiP=Button(root, text='Multiplayer', fg='black',height=3,width=30, command=mStart)
+    multiP.place(relx=0.5,rely=0.5,anchor=N)
+    changeOnHover(multiP,'grey','#efefef')
+    global singleP       
+    singleP=Button(root, text='Singleplayer/Practice', fg='black',height=3,width=30, command=start)
+    singleP.place(relx=0.5,rely=0.2,anchor=N)
+    changeOnHover(singleP,'grey','#efefef')
 
 # This will start the Test
-start()
+homeScreen()
 # Start the mainloop
 root.mainloop()
