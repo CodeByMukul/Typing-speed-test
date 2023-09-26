@@ -1,8 +1,8 @@
 from tkinter import *
+from tkinter import font as font
 import ctypes
 import random
-import tkinter
- 
+
 # For a sharper window
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
@@ -16,9 +16,21 @@ root.geometry('700x700')
 # Setting the Font for all Labels and Buttons
 root.option_add("*Label.Font", "consolas 30")
 root.option_add("*Button.Font", "consolas 30")
-
+#improve this
+Custom_font = font.Font( family = "Comic Sans MS", size = 30)
 
 # functions
+def changeOnHover(button, colorOnHover, colorOnLeave):
+ 
+    # adjusting backgroung of the widget
+    # background on entering widget
+    button.bind("<Enter>", func=lambda e: button.config(
+        background=colorOnHover))
+ 
+    # background color on leving widget
+    button.bind("<Leave>", func=lambda e: button.config(
+        background=colorOnLeave))
+    
 def keyPress(event=None):
     try:
         if event.char.lower() == labelRight.cget('text')[0].lower():
@@ -122,6 +134,7 @@ def stopTest():
     global ResultButton
     ResultButton = Button(root, text=f'Retry', command=restart)
     ResultButton.place(relx=0.5, rely=0.6, anchor=CENTER)
+    changeOnHover(ResultButton,'grey','#efefef')
 
 def restart():
     # Destry result widgets
@@ -150,8 +163,8 @@ def start():
     High=max(int(i) for i in HSget.read().split('\n'))
     #highscore
     global HS
-    HS=Label(root, text=f'Current highscore is {High} wpm \n global highscore is 212 wpm', fg='black')
-    HS.place(relx=0.5, rely=0.2, anchor=N)
+    HS=Label(root, text=f'Current highscore is {High} wpm \n Global highscore is 212 wpm', fg='black', font=Custom_font)#bg='white'
+    HS.place(relx=0.5, rely=0.15, anchor=N)
     global Timeget
     Timeget=Label(root, text='Please enter the time (number of minutes to practice) between 1-10', fg='black')
     Timeget.place(relx=0.5, rely=0.4, anchor=N)
@@ -162,8 +175,9 @@ def start():
     global TimeButton
     TimeButton= Button(root, text=f'Start', command=validatestart)
     TimeButton.place(relx=0.5,rely=0.7,anchor=S)
+    changeOnHover(TimeButton,'grey','#efefef')
 
-# this will check if user wrote the correct text
+# this will check if user wrote the correct text for the time input
 def validatestart():
     if int(Time.get())>0 and int(Time.get())<11:
         global Nominutes
