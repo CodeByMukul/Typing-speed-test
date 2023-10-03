@@ -231,7 +231,7 @@ def mStart():
     players= Entry(root, width= 40)
     players.place(relx=0.5,rely=0.5, anchor=N)
     global playButton
-    playButton= Button(root, text=f'Play',width=6, command=validatestart)
+    playButton= Button(root, text=f'Play',width=6, command=multiStart)#! DO NOT RUN, COMMAND ME BAS AISE HI KUCH BHI DAAL DIA HAI
     playButton.place(relx=0.5,rely=0.7,anchor=S)
     changeOnHover(playButton,'green','#efefef')
     global backButton
@@ -240,6 +240,10 @@ def mStart():
     changeOnHover(backButton,'red','#efefef')
 
     pass
+def multiStart():#!iski wajah se shayad countdown me dikkat aa rhi hai will have to see
+    for n in range(int(players.get())):
+        playerTurn(n+1)
+
 def homeScreen():
     global multiP
     multiP=Button(root, text='Multiplayer', fg='black',height=3,width=30, command=mStart)
@@ -249,6 +253,125 @@ def homeScreen():
     singleP=Button(root, text='Singleplayer/Practice', fg='black',height=3,width=30, command=start)
     singleP.place(relx=0.5,rely=0.2,anchor=N)
     changeOnHover(singleP,'grey','#efefef')
+
+def multiResetWritingLabels():
+    # Text List
+    TextToType=open('sen_type.txt')
+    Words=TextToType.read()
+    TextToType.close()
+    possibleTexts=Words.split('\n')
+    text=''
+    # Chosing one of the texts randomly with the choice function
+    while len(text.split())<220*Nominutes:
+        text += random.choice(possibleTexts).lower()
+    # defining where the text is split
+    splitPoint = 0
+    # This is where the text is that is already written
+    global labelLeft
+    labelLeft = Label(root, text=text[0:splitPoint], fg='grey')
+    labelLeft.place(relx=0.5, rely=0.5, anchor=E)
+
+    # Here is the text which will be written
+    global labelRight
+    labelRight = Label(root, text=text[splitPoint:])
+    labelRight.place(relx=0.5, rely=0.5, anchor=W)
+
+    # This label shows the user which letter he now has to press
+    global currentLetterLabel
+    currentLetterLabel = Label(root, text=text[splitPoint], fg='grey')
+    currentLetterLabel.place(relx=0.5, rely=0.6, anchor=N)
+
+    # this label shows the user how much time has gone by
+    global timeleftLabel
+    timeleftLabel = Label(root, text=f'0 Seconds', fg='grey')
+    timeleftLabel.place(relx=0.5, rely=0.4, anchor=S)
+
+    global goal
+    goal= Label(root, text=f'Current highscore to beat: {High} wpm \n Number of words to beat: {int(High)*Nominutes}', fg='red')
+    goal.place(relx=0.5, rely=0.2, anchor=N)
+
+    global writeAble
+    writeAble = True
+    root.bind('<Key>', keyPress)
+
+    global passedSeconds
+    passedSeconds = 0
+
+    # Binding callbacks to functions after a certain amount of time.
+    root.after(Nominutes*60000, multiStopTest)
+    root.after(1000, addSecond)
+
+def playerTurn(n):
+    noPlayers.destroy()
+    players.destroy()
+    playButton.destroy()
+    backButton.destroy()
+    global playerNo
+    playerNo=Label(root, text=f"Player {n}'s turn begins in", fg='black')
+    playerNo.place(relx=0.5, rely=0.4, anchor=N)
+
+    global countdownLabel
+    countdownLabel = Label(root, text=f'10 Seconds', fg='grey')
+    countdownLabel.place(relx=0.5, rely=0.6, anchor=S)
+
+    global countdown
+    countdown=11
+
+    #root.after(1000, countdownMulti)
+    countdownMulti()
+
+
+def countdownMulti():
+    # countdown 1 second at  a time.
+
+    global countdown
+    countdown += 1
+    countdownLabel.configure(text=f'{countdown} Seconds')
+
+    # call this function again after one second if the time is not over.
+    if countdown>0:
+        root.after(10000,countdownMulti)
+
+def multiStopTest():
+    global writeAble
+    writeAble = False
+    
+    # Calculating the amount of words
+    global amountWords
+    #amountWords = len(labelLeft.cget('text').split(' '))//Nominutes
+    amountWords = len(labelLeft.cget('text').split(' '))//Nominutes
+    # Destroy all unwanted widgets.
+    timeleftLabel.destroy()
+    currentLetterLabel.destroy()
+    labelRight.destroy()
+    labelLeft.destroy()
+    goal.destroy()
+
+    #check for hs
+    global Cong
+    if int(amountWords)>212:
+        Cong=Label(root, text=f'Conratulations! You have set a new world record of {amountWords} words per minute.', fg='green')
+        Cong.place(relx=0.5, rely=0.2, anchor=N)
+        HSget.write('\n'+str(amountWords))
+        HSget.close()
+    elif int(amountWords)>int(High):
+        Cong=Label(root, text=f'Conratulations! You have set a new highscore of {amountWords} words per minute.', fg='green')
+        Cong.place(relx=0.5, rely=0.2, anchor=N)
+        HSget.write('\n'+str(amountWords))
+        HSget.close()
+    # Display the test results with a formatted string
+    global ResultLabel
+    ResultLabel = Label(root, text=f'Words per Minute: {amountWords}', fg='black')
+    ResultLabel.place(relx=0.5, rely=0.4, anchor=CENTER)
+
+    # Display a button to restart the game
+    global ResultButton
+    ResultButton = Button(root, text=f'Retry', command=restart)
+    ResultButton.place(relx=0.5, rely=0.6, anchor=CENTER)
+    changeOnHover(ResultButton,'grey','#efefef')
+
+
+
 
 # This will start the Test
 homeScreen()
