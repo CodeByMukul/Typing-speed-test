@@ -231,7 +231,7 @@ def mStart():
     players= Entry(root, width= 40)
     players.place(relx=0.5,rely=0.5, anchor=N)
     global playButton
-    playButton= Button(root, text=f'Play',width=6, command=multiStart)#! DO NOT RUN, COMMAND ME BAS AISE HI KUCH BHI DAAL DIA HAI
+    playButton= Button(root, text=f'Play',width=6, command=playerTurn)#! DO NOT RUN, COMMAND ME BAS AISE HI KUCH BHI DAAL DIA HAI
     playButton.place(relx=0.5,rely=0.7,anchor=S)
     changeOnHover(playButton,'green','#efefef')
     global backButton
@@ -240,10 +240,13 @@ def mStart():
     changeOnHover(backButton,'red','#efefef')
 
     pass
+'''
 def multiStart():#!iski wajah se shayad countdown me dikkat aa rhi hai will have to see
-    for n in range(int(players.get())):
-        playerTurn(n+1)
-
+    n=1
+    play=int(players.get())
+    while n<=play:
+        n=playerTurn(n)
+'''
 def homeScreen():
     global multiP
     multiP=Button(root, text='Multiplayer', fg='black',height=3,width=30, command=mStart)
@@ -301,36 +304,45 @@ def multiResetWritingLabels():
     root.after(Nominutes*60000, multiStopTest)
     root.after(1000, addSecond)
 
-def playerTurn(n):
+def playerTurn():
+    global turn_over
+    turn_over=int(players.get())
     noPlayers.destroy()
     players.destroy()
     playButton.destroy()
     backButton.destroy()
-    global playerNo
-    playerNo=Label(root, text=f"Player {n}'s turn begins in", fg='black')
-    playerNo.place(relx=0.5, rely=0.4, anchor=N)
+    global turn
+    turn=1
+    if turn>turn_over:
+        stopTest()
+    else:
+        global playerNo
+        playerNo=Label(root, text=f"Player 1's turn begins in", fg='black')
+        playerNo.place(relx=0.5, rely=0.4, anchor=N)
 
-    global countdownLabel
-    countdownLabel = Label(root, text=f'10 Seconds', fg='grey')
-    countdownLabel.place(relx=0.5, rely=0.6, anchor=S)
+        global countdownLabel
+        countdownLabel = Label(root, text=f'10 Seconds', fg='grey')
+        countdownLabel.place(relx=0.5, rely=0.6, anchor=S)
 
-    global countdown
-    countdown=11
+        global countdown
+        countdown=11
 
-    #root.after(1000, countdownMulti)
-    countdownMulti()
+        #root.after(1000, countdownMulti)
+        root.after(1000,countdownMulti)
+
 
 
 def countdownMulti():
     # countdown 1 second at  a time.
 
     global countdown
-    countdown += 1
+    countdown -= 1
     countdownLabel.configure(text=f'{countdown} Seconds')
 
     # call this function again after one second if the time is not over.
     if countdown>0:
-        root.after(10000,countdownMulti)
+        root.after(1000,countdownMulti)
+        print(countdown)
 
 def multiStopTest():
     global writeAble
