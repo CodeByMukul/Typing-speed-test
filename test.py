@@ -221,8 +221,12 @@ def mBack():
 def mStart():
     multiP.destroy()
     singleP.destroy()
-    global multiGet
-    multiGet=open('Multiplayer.txt','w+')
+    global turn
+    turn=0
+    global mHigh
+    mHigh=0
+    global turn_over
+    turn_over=0
     global noPlayers
     noPlayers=Label(root, text='Please enter the number of players', fg='black')
     noPlayers.place(relx=0.5, rely=0.4, anchor=N)
@@ -239,7 +243,10 @@ def mStart():
     backButton.place(relx=0.5,rely=0.82,anchor=S)
     changeOnHover(backButton,'red','#efefef')
 
-    pass
+def multiHigh(i):
+    global mHigh
+    mHigh=i
+
 '''
 def multiStart():#!iski wajah se shayad countdown me dikkat aa rhi hai will have to see
     n=1
@@ -259,13 +266,15 @@ def homeScreen():
 
 def multiResetWritingLabels():
     # Text List
+    playerNo.destroy()
+    countdownLabel.destroy()
     TextToType=open('sen_type.txt')
     Words=TextToType.read()
     TextToType.close()
     possibleTexts=Words.split('\n')
     text=''
     # Chosing one of the texts randomly with the choice function
-    while len(text.split())<220*Nominutes:
+    while len(text.split())<220*1:
         text += random.choice(possibleTexts).lower()
     # defining where the text is split
     splitPoint = 0
@@ -288,10 +297,13 @@ def multiResetWritingLabels():
     global timeleftLabel
     timeleftLabel = Label(root, text=f'0 Seconds', fg='grey')
     timeleftLabel.place(relx=0.5, rely=0.4, anchor=S)
-
     global goal
-    goal= Label(root, text=f'Current highscore to beat: {High} wpm \n Number of words to beat: {int(High)*Nominutes}', fg='red')
-    goal.place(relx=0.5, rely=0.2, anchor=N)
+    if turn==1:
+        goal= Label(root, text=f'You are the first player! Try setting a highscore no one can beat!', fg='red')
+        goal.place(relx=0.5, rely=0.2, anchor=N)
+    else:  
+        goal= Label(root, text=f'Current highscore to beat: {mHigh} wpm \n Number of words to beat: {int(mHigh)*1}', fg='red')
+        goal.place(relx=0.5, rely=0.2, anchor=N)
 
     global writeAble
     writeAble = True
@@ -301,48 +313,60 @@ def multiResetWritingLabels():
     passedSeconds = 0
 
     # Binding callbacks to functions after a certain amount of time.
-    root.after(Nominutes*60000, multiStopTest)
+    root.after(10000, multiStopTest)
     root.after(1000, addSecond)
 
 def playerTurn():
     global turn_over
-    turn_over=int(players.get())
-    noPlayers.destroy()
-    players.destroy()
-    playButton.destroy()
-    backButton.destroy()
+    if turn_over>0:
+        pass
+    else:
+        turn_over=int(players.get())
+    try:
+        noPlayers.destroy()
+        players.destroy()
+        playButton.destroy()
+        backButton.destroy()
+        ResultLabel.destroy()
+        Cong.destroy()
+        ResultButton.destroy()
+    except:
+        pass
     global turn
-    turn=1
+    turn+=1
     if turn>turn_over:
-        stopTest()
+        endTest()
     else:
         global playerNo
-        playerNo=Label(root, text=f"Player 1's turn begins in", fg='black')
+        playerNo=Label(root, text=f"Player {turn}'s turn begins in", fg='black')
         playerNo.place(relx=0.5, rely=0.4, anchor=N)
 
-        global countdownLabel
-        countdownLabel = Label(root, text=f'10 Seconds', fg='grey')
-        countdownLabel.place(relx=0.5, rely=0.6, anchor=S)
+
 
         global countdown
         countdown=11
 
         #root.after(1000, countdownMulti)
-        root.after(1000,countdownMulti)
+        root.after(1000,countdownMulti())
 
 
 
 def countdownMulti():
-    # countdown 1 second at  a time.
-
     global countdown
+    # countdown 1 second at  a time.
+    global countdownLabel
+    if countdown==11:
+        countdownLabel = Label(root, text=f'10 Seconds', fg='grey')
+        countdownLabel.place(relx=0.5, rely=0.6, anchor=S)
     countdown -= 1
     countdownLabel.configure(text=f'{countdown} Seconds')
 
     # call this function again after one second if the time is not over.
     if countdown>0:
         root.after(1000,countdownMulti)
-        print(countdown)
+    else:
+        countdown=11
+        multiResetWritingLabels()
 
 def multiStopTest():
     global writeAble
@@ -351,7 +375,7 @@ def multiStopTest():
     # Calculating the amount of words
     global amountWords
     #amountWords = len(labelLeft.cget('text').split(' '))//Nominutes
-    amountWords = len(labelLeft.cget('text').split(' '))//Nominutes
+    amountWords = len(labelLeft.cget('text').split(' '))
     # Destroy all unwanted widgets.
     timeleftLabel.destroy()
     currentLetterLabel.destroy()
@@ -361,26 +385,36 @@ def multiStopTest():
 
     #check for hs
     global Cong
+    global mHigh
+    global turn
     if int(amountWords)>212:
         Cong=Label(root, text=f'Conratulations! You have set a new world record of {amountWords} words per minute.', fg='green')
         Cong.place(relx=0.5, rely=0.2, anchor=N)
         HSget.write('\n'+str(amountWords))
         HSget.close()
-    elif int(amountWords)>int(High):
+    elif int(amountWords)>int(mHigh):
         Cong=Label(root, text=f'Conratulations! You have set a new highscore of {amountWords} words per minute.', fg='green')
         Cong.place(relx=0.5, rely=0.2, anchor=N)
-        HSget.write('\n'+str(amountWords))
-        HSget.close()
+        mHigh=int(amountWords)
+        global winturn
+        winturn=turn
     # Display the test results with a formatted string
     global ResultLabel
     ResultLabel = Label(root, text=f'Words per Minute: {amountWords}', fg='black')
     ResultLabel.place(relx=0.5, rely=0.4, anchor=CENTER)
 
-    # Display a button to restart the game
     global ResultButton
-    ResultButton = Button(root, text=f'Retry', command=restart)
+    ResultButton = Button(root, text=f'Next', command=playerTurn)
     ResultButton.place(relx=0.5, rely=0.6, anchor=CENTER)
     changeOnHover(ResultButton,'grey','#efefef')
+
+def endTest():
+    global winturn
+    ResultLabel = Label(root, text=f'The winner is Player {winturn} with a score of {mHigh} words per minute', fg='black')
+    ResultLabel.place(relx=0.5, rely=0.4, anchor=CENTER)
+    #changeonhover function use krna koi button add kro toh
+    #! change time of test from 10 seconds to 60 seconds
+
 
 
 
