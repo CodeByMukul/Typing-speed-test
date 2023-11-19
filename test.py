@@ -4,7 +4,6 @@ import ctypes
 import random
 
 # For a sharper window
-ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
 # Setup
 root = Tk()
@@ -298,11 +297,11 @@ def multiResetWritingLabels():
     timeleftLabel = Label(root, text=f'0 Seconds', fg='grey')
     timeleftLabel.place(relx=0.5, rely=0.4, anchor=S)
     global goal
-    if turn==1:
+    if turn==1 and mHigh==0:
         goal= Label(root, text=f'You are the first player! Try setting a highscore no one can beat!', fg='red')
         goal.place(relx=0.5, rely=0.2, anchor=N)
     else:  
-        goal= Label(root, text=f'Current highscore to beat: {mHigh} wpm \n Number of words to beat: {int(mHigh)*1}', fg='red')
+        goal= Label(root, text=f'Current highscore to beat: {mHigh} wpm \n Number of words to beat: {int(mHigh)}', fg='red')
         goal.place(relx=0.5, rely=0.2, anchor=N)
 
     global writeAble
@@ -313,7 +312,7 @@ def multiResetWritingLabels():
     passedSeconds = 0
 
     # Binding callbacks to functions after a certain amount of time.
-    root.after(10000, multiStopTest)
+    root.after(5000, multiStopTest)
     root.after(1000, addSecond)
 
 def playerTurn():
@@ -410,12 +409,40 @@ def multiStopTest():
 
 def endTest():
     global winturn
-    ResultLabel = Label(root, text=f'The winner is Player {winturn} with a score of {mHigh} words per minute', fg='black')
+    global ResultLabel
+    ResultLabel = Label(root, text=f'The winner is Player {winturn} with a score of {mHigh} words per minute!', fg='black')
     ResultLabel.place(relx=0.5, rely=0.4, anchor=CENTER)
     #changeonhover function use krna koi button add kro toh
     #! change time of test from 10 seconds to 60 seconds
+    global playAgainButton
+    playAgainButton = Button(root, text=f'Play Again', command=mRestart)
+    playAgainButton.place(relx=0.5, rely=0.65, anchor=CENTER)
+    changeOnHover(playAgainButton,'grey','#efefef')
+
+    global exitButton
+    exitButton = Button(root, text=f'Back', command=mEnd)
+    exitButton.place(relx=0.5, rely=0.8, anchor=CENTER)
+    changeOnHover(exitButton,'red','#efefef')
+
+def mEnd():
+    ResultLabel.destroy()
+    playAgainButton.destroy()
+    exitButton.destroy()
+    homeScreen()
+
+def mRestart():
+    ResultLabel.destroy()
+    playAgainButton.destroy()
+    exitButton.destroy()
+    global turn
+    turn=0
+    playerTurn()
 
 
+
+
+
+#! add functionality to play again button in multiplayer, change the time to 60 seconds again add leaderboard?
 
 
 
