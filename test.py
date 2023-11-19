@@ -220,6 +220,15 @@ def mBack():
 def mStart():
     multiP.destroy()
     singleP.destroy()
+    try:
+        backAgainButton.destroy()
+        headingLabel.destroy() 
+        rule1Label.destroy()
+        rule2Label.destroy()
+        rule3Label.destroy()
+        rule4Label.destroy()
+
+    except:pass
     global turn
     turn=0
     global mHigh
@@ -228,19 +237,59 @@ def mStart():
     turn_over=0
     global noPlayers
     noPlayers=Label(root, text='Please enter the number of players', fg='black')
-    noPlayers.place(relx=0.5, rely=0.4, anchor=N)
+    noPlayers.place(relx=0.5, rely=0.3, anchor=N)
     #taking the amount of players that want to compete 
     global players
     players= Entry(root, width= 40)
-    players.place(relx=0.5,rely=0.5, anchor=N)
+    players.place(relx=0.5,rely=0.4, anchor=N)
     global playButton
-    playButton= Button(root, text=f'Play',width=6, command=playerTurn)#! DO NOT RUN, COMMAND ME BAS AISE HI KUCH BHI DAAL DIA HAI
-    playButton.place(relx=0.5,rely=0.7,anchor=S)
+    playButton= Button(root, text=f'Play',width=6, command=validatemStart)#! DO NOT RUN, COMMAND ME BAS AISE HI KUCH BHI DAAL DIA HAI
+    playButton.place(relx=0.5,rely=0.6,anchor=S)
     changeOnHover(playButton,'green','#efefef')
     global backButton
     backButton= Button(root,text='Back',width=6, command=mBack)
-    backButton.place(relx=0.5,rely=0.82,anchor=S)
+    backButton.place(relx=0.5,rely=0.84,anchor=S)
     changeOnHover(backButton,'red','#efefef')
+    global guideButton
+    guideButton= Button(root,text='Guide',width=6, command=mGuide)
+    guideButton.place(relx=0.5,rely=0.72,anchor=S)
+    changeOnHover(guideButton,'blue','#efefef')
+
+def validatemStart():
+    if int(players.get())>1:
+        playerTurn()
+
+
+
+def mGuide():
+    noPlayers.destroy()
+    players.destroy()
+    playButton.destroy()
+    backButton.destroy()
+    guideButton.destroy()
+    global headingLabel
+    headingLabel=Label(root, text='Guide', fg='black', font='consolas 30 bold')
+    headingLabel.place(relx=0.5, rely=0.05, anchor=N)
+    global rule1Label 
+    rule1Label=Label(root, text='1)Minimum 2 players are required to play this game mode', fg='black', font='consolas 20')
+    rule1Label.place(relx=0.268, rely=0.2, anchor=N)
+    global rule2Label
+    rule2Label=Label(root, text='2)Each player will get one minute to type', fg='black', font='consolas 20')
+    rule2Label.place(relx=0.2, rely=0.3, anchor=N)
+    global rule3Label
+    rule3Label=Label(root, text='3)Incase of rematch, the highest score will be saved to beat', fg='black', font='consolas 20')
+    rule3Label.place(relx=0.292, rely=0.4, anchor=N)
+    global rule4Label
+    rule4Label=Label(root, text='Good Luck!', fg='black', font='consolas 30 bold')
+    rule4Label.place(relx=0.5, rely=0.55, anchor=N)
+    global backAgainButton
+    backAgainButton= Button(root,text='Back',width=6, command=mStart)
+    backAgainButton.place(relx=0.5,rely=0.84,anchor=S)
+    changeOnHover(backAgainButton,'red','#efefef')
+    
+    pass
+
+
 
 def multiHigh(i):
     global mHigh
@@ -301,7 +350,7 @@ def multiResetWritingLabels():
         goal= Label(root, text=f'You are the first player! Try setting a highscore no one can beat!', fg='red')
         goal.place(relx=0.5, rely=0.2, anchor=N)
     else:  
-        goal= Label(root, text=f'Current highscore to beat: {mHigh} wpm \n Number of words to beat: {int(mHigh)}', fg='red')
+        goal= Label(root, text=f'Current highscore to beat: {mHigh} wpm \n Type the words written below!', fg='red')
         goal.place(relx=0.5, rely=0.2, anchor=N)
 
     global writeAble
@@ -326,6 +375,7 @@ def playerTurn():
         players.destroy()
         playButton.destroy()
         backButton.destroy()
+        guideButton.destroy()
         ResultLabel.destroy()
         Cong.destroy()
         ResultButton.destroy()
@@ -415,7 +465,7 @@ def endTest():
     #changeonhover function use krna koi button add kro toh
     #! change time of test from 10 seconds to 60 seconds
     global playAgainButton
-    playAgainButton = Button(root, text=f'Play Again', command=mRestart)
+    playAgainButton = Button(root, text=f'Rematch', command=mRestart)
     playAgainButton.place(relx=0.5, rely=0.65, anchor=CENTER)
     changeOnHover(playAgainButton,'grey','#efefef')
 
@@ -442,7 +492,7 @@ def mRestart():
 
 
 
-#! add functionality to play again button in multiplayer, change the time to 60 seconds again add leaderboard?
+#! change the time to 60 seconds again add leaderboard?
 
 
 
