@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter import font as font
-import ctypes
 import random
 
 # For a sharper window
@@ -158,6 +157,8 @@ def addSecond():
 def start():
     multiP.destroy()
     singleP.destroy()
+    try: guideButton.destroy()
+    except:pass
     global HSget
     HSget=open('Highscore.txt','r+')
     global High
